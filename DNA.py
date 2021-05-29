@@ -64,16 +64,9 @@ class DNA:
         """
         new_DNA = DNA(self.get_triangles())
         for i in range(self.get_triangles()):
-            new_DNA.coordinates[i, 0] = self.coordinates[i, 0] + (new_DNA.coordinates[i, 0] - 0.5) * coordinates_diff
-            new_DNA.coordinates[i, 1] = self.coordinates[i, 1] + (new_DNA.coordinates[i, 1] - 0.5) * coordinates_diff
-            new_DNA.coordinates[i, 2] = self.coordinates[i, 2] + (new_DNA.coordinates[i, 2] - 0.5) * coordinates_diff
-            new_DNA.coordinates[i, 3] = self.coordinates[i, 3] + (new_DNA.coordinates[i, 3] - 0.5) * coordinates_diff
-            new_DNA.coordinates[i, 4] = self.coordinates[i, 4] + (new_DNA.coordinates[i, 4] - 0.5) * coordinates_diff
-            new_DNA.coordinates[i, 5] = self.coordinates[i, 5] + (new_DNA.coordinates[i, 5] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i] = self.coordinates[i] + (new_DNA.coordinates[i] - 0.5) * coordinates_diff
 
-            new_DNA.colors[i, 0] = self.colors[i, 0] + (new_DNA.colors[i, 0] - 0.5) * color_diff
-            new_DNA.colors[i, 1] = self.colors[i, 1] + (new_DNA.colors[i, 1] - 0.5) * color_diff
-            new_DNA.colors[i, 2] = self.colors[i, 2] + (new_DNA.colors[i, 2] - 0.5) * color_diff
+            new_DNA.colors[i] = self.colors[i] + (new_DNA.colors[i] - 0.5) * color_diff
         return new_DNA
 
     def get_triangles(self):

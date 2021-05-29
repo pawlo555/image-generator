@@ -2,7 +2,7 @@ from DNA import DNA
 import cv2
 
 
-dna = DNA(500)
+dna = DNA(50)
 image = dna.generated_image(400, 400)
 mutated = dna.mutate()
 mutated_image = mutated.generated_image(400, 400)
