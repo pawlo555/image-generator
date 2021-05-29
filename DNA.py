@@ -1,3 +1,7 @@
+import numpy as np
+import cv2
+
+
 """
 A DNA can be an array of floats with values from 0 to 1.
 First 2 are the coordinates of first triangle points, second 2 for second point and third for third.
@@ -7,3 +11,76 @@ And for 100 triangles we have array containing 900 values.
 To change DNA we can slightly change values of network.
 Each value change by some randomly choice value for example in range(0.01, 0.1).
 """
+
+
+class DNA:
+    def __init__(self, triangles):
+        """
+        Creates a DNA which contain set parameters of triangles.
+        :param triangles: number of triangles to generate
+        """
+        self.coordinates = np.random.random((triangles, 6))
+        self.colors = np.random.random((triangles, 3))
+        self.triangles = triangles
+
+    def count_loss(self, image):
+        """
+        Counting a difference in input image and image generated from DNA
+        :param image: input image - np.array of shape (height, width, 3)
+        :return: loss of DNA
+        """
+        generated = self.generated_image(image[0], image[1])
+        return np.square(np.substract(generated, image))
+
+    def generated_image(self, height, width):
+        """
+        Generate an image using actual DNA
+        :param height: height of generated image
+        :param width: width of generated image
+        :return: image of shape (height, width, 3)
+        """
+        n = self.get_triangles()
+        images = np.zeros(shape=(n, height, width, 3))
+        mask = np.zeros(shape=(height, width, 3))
+
+        for i in range(n):
+            point1 = (self.coordinates[i, 0]*height, self.coordinates[i, 1]*width)
+            point2 = (self.coordinates[i, 2]*height, self.coordinates[i, 3]*width)
+            point3 = (self.coordinates[i, 4]*height, self.coordinates[i, 5]*width)
+            contour = np.array([point1, point2, point3])
+
+            cv2.drawContours(images[i], [contour.astype(int)], 0, self.colors[i], -1)
+            mask[images[i] != 0] = mask[images[i] != 0] + 1
+            print(np.max(images[i]))
+        mask[mask == 0] = 1
+        result = np.sum(images, axis=0)/mask
+        print(result)
+        return result
+
+    def mutate(self, coordinates_diff=0.1, color_diff=0.1):
+        """
+        Generate new DNA based on self. Similarity to based image depends of coordinates_diff and color_diff parameters.
+        :param coordinates_diff: Determine how much coordinates change.
+        :param color_diff: Determine how much color change.
+        :return: new DNA
+        """
+        new_DNA = DNA(self.get_triangles())
+        for i in range(self.get_triangles()):
+            new_DNA.coordinates[i, 0] = self.coordinates[i, 0] + (new_DNA.coordinates[i, 0] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i, 1] = self.coordinates[i, 1] + (new_DNA.coordinates[i, 1] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i, 2] = self.coordinates[i, 2] + (new_DNA.coordinates[i, 2] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i, 3] = self.coordinates[i, 3] + (new_DNA.coordinates[i, 3] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i, 4] = self.coordinates[i, 4] + (new_DNA.coordinates[i, 4] - 0.5) * coordinates_diff
+            new_DNA.coordinates[i, 5] = self.coordinates[i, 5] + (new_DNA.coordinates[i, 5] - 0.5) * coordinates_diff
+
+            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
+            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
+            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
+        return new_DNA
+
+    def get_triangles(self):
+        """
+        Get number of triangles coded in DNA
+        :return: number of triangles in DNA
+        """
+        return self.triangles
