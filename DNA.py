@@ -30,7 +30,7 @@ class DNA:
         :return: loss of DNA
         """
         generated = self.generated_image(image[0], image[1])
-        return np.square(np.substract(generated, image))
+        return np.sum(np.square(np.substract(generated, image)))
 
     def generated_image(self, height, width):
         """
