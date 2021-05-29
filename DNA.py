@@ -29,8 +29,8 @@ class DNA:
         :param image: input image - np.array of shape (height, width, 3)
         :return: loss of DNA
         """
-        generated = self.generated_image(image[0], image[1])
-        return np.sum(np.square(np.substract(generated, image)))
+        generated = self.generated_image(image.shape[0], image.shape[1])
+        return np.sum(np.square(np.subtract(generated, image)))
 
     def generated_image(self, height, width):
         """
@@ -49,13 +49,13 @@ class DNA:
             point3 = (self.coordinates[i, 4]*height, self.coordinates[i, 5]*width)
             contour = np.array([point1, point2, point3])
 
-            cv2.drawContours(images[i], [contour.astype(int)], 0, self.colors[i], -1)
+            cv2.drawContours(images[i], [contour.astype(int)], 0, self.colors[i]*255, -1)
             mask[images[i] != 0] = mask[images[i] != 0] + 1
         mask[mask == 0] = 1
         result = np.sum(images, axis=0)/mask
         return result
 
-    def mutate(self, coordinates_diff=0.1, color_diff=0.1):
+    def mutate(self, coordinates_diff=0.03, color_diff=0.03):
         """
         Generate new DNA based on self. Similarity to based image depends of coordinates_diff and color_diff parameters.
         :param coordinates_diff: Determine how much coordinates change.
@@ -65,8 +65,13 @@ class DNA:
         new_DNA = DNA(self.get_triangles())
         for i in range(self.get_triangles()):
             new_DNA.coordinates[i] = self.coordinates[i] + (new_DNA.coordinates[i] - 0.5) * coordinates_diff
-
             new_DNA.colors[i] = self.colors[i] + (new_DNA.colors[i] - 0.5) * color_diff
+
+        new_DNA.coordinates[new_DNA.coordinates < 0] = 0
+        new_DNA.coordinates[new_DNA.coordinates > 1] = 1
+        new_DNA.colors[new_DNA.colors < 0] = 0
+        new_DNA.colors[new_DNA.colors > 1] = 1
+
         return new_DNA
 
     def get_triangles(self):

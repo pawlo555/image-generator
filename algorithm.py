@@ -7,17 +7,9 @@ pt1 = (150, 100)
 pt2 = (100, 200)
 pt3 = (200, 200)
 
-cv2.circle(image, pt1, 2, [0,0,255], -1)
-cv2.circle(image, pt2, 2, (0,0,255), -1)
-cv2.circle(image, pt3, 2, (0,0,255), -1)
-
-# format for triangle coordinates
-triangle_cnt = np.array( [pt1, pt2, pt3] )
-
-print(triangle_cnt)
-# draw triangle in image
-cv2.drawContours(image, [triangle_cnt], 0, (0,255,0), -1)
-print(image)
+array = [2,3,5,7,3,7,3,1]
+sorted_array = sorted(array, key=lambda x: x)
+print(array, sorted_array)
 
 cv2.imshow("image", image)
 cv2.waitKey()
