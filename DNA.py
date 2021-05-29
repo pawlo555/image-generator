@@ -51,10 +51,8 @@ class DNA:
 
             cv2.drawContours(images[i], [contour.astype(int)], 0, self.colors[i], -1)
             mask[images[i] != 0] = mask[images[i] != 0] + 1
-            print(np.max(images[i]))
         mask[mask == 0] = 1
         result = np.sum(images, axis=0)/mask
-        print(result)
         return result
 
     def mutate(self, coordinates_diff=0.1, color_diff=0.1):
@@ -73,9 +71,9 @@ class DNA:
             new_DNA.coordinates[i, 4] = self.coordinates[i, 4] + (new_DNA.coordinates[i, 4] - 0.5) * coordinates_diff
             new_DNA.coordinates[i, 5] = self.coordinates[i, 5] + (new_DNA.coordinates[i, 5] - 0.5) * coordinates_diff
 
-            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
-            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
-            new_DNA.colors[0, 1] = self.colors[0, i] + (new_DNA.colors[0, i] - 0.5) * color_diff
+            new_DNA.colors[i, 0] = self.colors[i, 0] + (new_DNA.colors[i, 0] - 0.5) * color_diff
+            new_DNA.colors[i, 1] = self.colors[i, 1] + (new_DNA.colors[i, 1] - 0.5) * color_diff
+            new_DNA.colors[i, 2] = self.colors[i, 2] + (new_DNA.colors[i, 2] - 0.5) * color_diff
         return new_DNA
 
     def get_triangles(self):
