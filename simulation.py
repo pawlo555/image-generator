@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 START_NUMBER = 5
 GENERATED_PER_IMAGE = 15
+IMG_SHAPE = (100, 100)
 
 
 def mutate_images(DNAs, mutation_per_image):
@@ -39,23 +40,23 @@ def get_n_best_images(DNAs, n, image):
 
 
 im = Image.open('kopernik.jpg')
-im = im.resize((400, 400))
-source_image = np.array(im.convert('RGB'), dtype=np.int32)
+im = im.resize(IMG_SHAPE)
+source_image = np.array(im.convert('RGB'), dtype=np.uint8)
 
 images_DNA = [DNA(50) for _ in range(START_NUMBER)]
-for i in range(1000):
+for i in range(10):
     print(i)
     mutated_images = mutate_images(images_DNA, GENERATED_PER_IMAGE)
     images_DNA = get_n_best_images(mutated_images, START_NUMBER, source_image)
-    plt.imshow(images_DNA[0].generated_image(400, 400).astype(int))
+    plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
     plt.show()
 
 
 cv2.imshow("image", source_image)
-plt.imshow(images_DNA[0].generated_image(400, 400).astype(int))
+plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE))
 plt.show()
 plt.savefig("result.png")
-cv2.imshow("mutated", images_DNA[0])
+cv2.imshow("mutated", images_DNA[0].generated_image(*IMG_SHAPE))
 
 while True:
     k = cv2.waitKey(1)
