@@ -4,7 +4,6 @@ o odpowiednich wymiarach. w ten sposób zwiekszymy prawdopodobieństo generowani
 ### 2) Mutować osobno kordynaty a osobno kolory (Jeżeli teraz tak nie jest)
 
 ### 3) Nową populacje opierać na krzyżowaniu a nie na mutowaniu.
-    * Krzyżowanie 2 obrazków polega na stworzeniu nowego przez pobranie połowy trójkątó z pierwszego,
-    i połowy trójkątów z drugiego.
+* Krzyżowanie 2 obrazków polega na stworzeniu nowego przez pobranie połowy trójkątó z pierwszego, i połowy trójkątów z drugiego.
 
 ## 4) Mutowanie na razie nie ma sensu z funkcją { new = old + (new - 0.5)*diff }, bo new jest losowym ciągiem,
