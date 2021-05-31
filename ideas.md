@@ -7,5 +7,5 @@ Mutacja na razie polega na korekcji położenia trójkątów, a można pomyśle�
 ### 3) Nową populacje opierać na krzyżowaniu a nie na mutowaniu.
 * Krzyżowanie 2 obrazków polega na stworzeniu nowego przez pobranie połowy trójkątó z pierwszego, i połowy trójkątów z drugiego.
 
-### Selekcje opierać na np ruletce, a nie prostym "take n"
+### 4) Selekcje opierać na np ruletce, a nie prostym "take n"
 
