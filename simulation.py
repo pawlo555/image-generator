@@ -39,27 +39,36 @@ def get_n_best_images(DNAs, n, image):
     return result
 
 
-im = Image.open('kopernik.jpg')
-im = im.resize(IMG_SHAPE)
-source_image = np.array(im.convert('RGB'), dtype=np.uint8)
+def run():
+    im = Image.open('kopernik.jpg')
+    im = im.resize(IMG_SHAPE)
+    source_image = np.array(im.convert('RGB'), dtype=np.uint8)
 
-images_DNA = [DNA(50) for _ in range(START_NUMBER)]
-for i in range(10):
-    print(i)
-    mutated_images = mutate_images(images_DNA, GENERATED_PER_IMAGE)
-    images_DNA = get_n_best_images(mutated_images, START_NUMBER, source_image)
-    plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
+    images_DNA = [DNA(50) for _ in range(START_NUMBER)]
+    for i in range(3):
+        print(i)
+        mutated_images = mutate_images(images_DNA, GENERATED_PER_IMAGE)
+        images_DNA = get_n_best_images(mutated_images, START_NUMBER, source_image)
+        plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
+        plt.show()
+
+
+    cv2.imshow("image", source_image)
+    final_img = images_DNA[0].generated_image(*IMG_SHAPE).astype(np.uint8)
+    plt.imshow(final_img)
     plt.show()
+    cv2.imshow("mutated", final_img)
+    cv2.imwrite("result.png", final_img)
+
+    while True:
+        k = cv2.waitKey(1)
+        if k == 27:
+            cv2.destroyAllWindows()
+            break
+    return
 
 
-cv2.imshow("image", source_image)
-plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE))
-plt.show()
-plt.savefig("result.png")
-cv2.imshow("mutated", images_DNA[0].generated_image(*IMG_SHAPE))
+if __name__ == '__main__':
+    run()
 
-while True:
-    k = cv2.waitKey(1)
-    if k == 27:
-        cv2.destroyAllWindows()
-        break
+

@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import random
 
 
 """
@@ -22,6 +23,13 @@ class DNA:
         self.coordinates = np.random.random((triangles, 6))
         self.colors = np.random.random((triangles, 3))
         self.triangles = triangles
+
+    def create(self, coords, colors, triangles):
+        result = DNA(0)
+        result.coordinates = coords
+        result.colors = colors
+        result.triangles = triangles
+        return result
 
     def count_loss(self, image):
         """
@@ -73,6 +81,31 @@ class DNA:
         new_DNA.colors[new_DNA.colors > 1] = 1
 
         return new_DNA
+
+    def mate(self, other):
+        """
+        Two DNAs creates two children
+        :param other: partner to mate with
+        :return: list of two children
+        """
+        children = [DNA(self.triangles) for _ in range(2)]
+
+        for id in range(2):
+            indices = np.sort(np.random.choice(range(self.triangles), self.triangles // 2, replace=False))
+            idx = 0
+            for j in range(self.triangles):
+                if idx < len(indices):
+                    if indices[idx] == j:
+                        children[id].coordinates[j] = self.coordinates[j]
+                        children[id].colors[j] = self.colors[j]
+                        idx += 1
+                    else:
+                        children[id].coordinates[j] = other.coordinates[j]
+                        children[id].colors[j] = other.colors[j]
+                    children[id].coordinates[j] = other.coordinates[j]
+                    children[id].colors[j] = other.colors[j]
+        return children
+
 
     def get_triangles(self):
         """
