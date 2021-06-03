@@ -40,7 +40,7 @@ def get_n_best_images(DNAs, n, image):
 
 
 def run():
-    im = Image.open('kopernik.jpg')
+    im = Image.open('Patterns/kopernik.jpg')
     im = im.resize(IMG_SHAPE)
     source_image = np.array(im.convert('RGB'), dtype=np.uint8)
 

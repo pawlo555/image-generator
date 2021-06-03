@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import random
+from math import ceil, sqrt
 
 
 """
@@ -13,6 +13,23 @@ To change DNA we can slightly change values of network.
 Each value change by some randomly choice value for example in range(0.01, 0.1).
 """
 
+def RGB_Distance(colors):
+    """
+    Metric in RGB color space
+    :param pxl_1: (R, G, B)
+    :param pxl_2: (R, G, B)
+    :return: the distance between pixels
+    """
+    r1, g1, b1, r2, g2, b2 = colors[0], colors[1], colors[2], colors[3], colors[4], colors[5],
+    r_mean = (r1 + r2) / 2
+    d_r, d_g, d_b = r1 - r2, g1 - g2, b1 - b2
+    return sqrt(((2 + (r_mean / 256))*d_r*d_r) + (4*d_g*d_g) + ((1/256)*(767 - r_mean)*d_b*d_b))
+
+def count_loss(img1, img2):
+    return np.sum(np.square(np.apply_along_axis(
+        RGB_Distance, 2,
+        np.concatenate([img1, img2], axis=2)
+    )))
 
 class DNA:
     def __init__(self, triangles):
@@ -39,6 +56,12 @@ class DNA:
         """
         generated = self.generated_image(image.shape[0], image.shape[1])
         return np.sum(np.square(np.subtract(generated, image)))
+
+    def count_loss_V2(self, other):
+        return np.sum(np.square(np.apply_along_axis(
+            RGB_Distance, 2,
+            np.concatenate([self.generated_image(other.shape[0], other.shape[1]), other], axis=2)
+        ))) / 1000
 
     def generated_image(self, height, width):
         """
@@ -82,6 +105,19 @@ class DNA:
 
         return new_DNA
 
+    def mutateV2(self, intensity):
+        """
+        Mutates genes with given intensity
+        :param intensity: the proportion of genes to be modified
+        """
+        indices = np.random.choice(
+            range(self.triangles),
+            ceil(intensity * self.triangles),
+            replace=False)
+        for idx in indices:
+            self.coordinates[idx] = np.random.random(6)
+            self.colors[idx] = np.random.random(3)
+
     def mate(self, other):
         """
         Two DNAs creates two children
@@ -91,7 +127,10 @@ class DNA:
         children = [DNA(self.triangles) for _ in range(2)]
 
         for id in range(2):
-            indices = np.sort(np.random.choice(range(self.triangles), self.triangles // 2, replace=False))
+            indices = np.sort(np.random.choice(
+                range(self.triangles),
+                self.triangles // 2,
+                replace=False))
             idx = 0
             for j in range(self.triangles):
                 if idx < len(indices):
@@ -113,3 +152,14 @@ class DNA:
         :return: number of triangles in DNA
         """
         return self.triangles
+
+def myMax(t1, t2):
+    return max(t1[0], t2[0]), max(t1[1], t2[1]), max(t1[2], t2[2])
+
+if __name__ == '__main__':
+    # c1 = (25, 0, 255)
+    # c2 = (17, 0, 173)
+    # print(RGB_Distance(c1, c2))
+
+    a = np.ones((5, 5, 3))
+    print(count_loss(a, np.zeros((5, 5, 3))))
