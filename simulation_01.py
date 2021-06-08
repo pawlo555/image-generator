@@ -9,7 +9,8 @@ import random
 source_path = "Patterns/WholeThing.jpg"
 IMG_SHAPE = (100, 100)
 POPULATION_SIZE = 60
-NO_TRIANGLES = 8            # Should be even
+NO_TRIANGLES = 20            # Should be even
+
 
 def loadImage(path):
     im = Image.open(path).resize(IMG_SHAPE)
@@ -21,9 +22,11 @@ def plotPopulation(population):
         plt.imshow(population[i].generated_image(*IMG_SHAPE).astype(int))
         plt.show()
 
+
 def plotBestN(population, n, pattern_img):
     dominant = get_n_best_images(population, n, pattern_img)[0]
     plotPopulation(dominant)
+
 
 def mutate_images(DNAs, mutation_per_image):
     """
@@ -94,6 +97,7 @@ def mutateV2(DNAs, frequency, intensity):
             dna.mutateV2(intensity)
     return
 
+
 def mutateV1(DNAs, coords=0.03, colors=0.03):
     """
     Performs Mutation across the population
@@ -133,7 +137,7 @@ def run(maxIter):
     plt.imshow(final_img)
     plt.show()
     cv2.imshow("mutated", final_img)
-    cv2.imwrite("result.png", final_img)
+    cv2.imwrite("kopernik10k.png", final_img)
 
     while True:
         k = cv2.waitKey(1)
@@ -144,4 +148,4 @@ def run(maxIter):
 
 
 if __name__ == '__main__':
-    run(400)
+    run(4000)

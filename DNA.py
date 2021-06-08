@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from math import ceil, sqrt
+import random
 
 
 """
@@ -12,6 +13,7 @@ And for 100 triangles we have array containing 900 values.
 To change DNA we can slightly change values of network.
 Each value change by some randomly choice value for example in range(0.01, 0.1).
 """
+
 
 def RGB_Distance(colors):
     """
@@ -25,13 +27,17 @@ def RGB_Distance(colors):
     d_r, d_g, d_b = r1 - r2, g1 - g2, b1 - b2
     return sqrt(((2 + (r_mean / 256))*d_r*d_r) + (4*d_g*d_g) + ((1/256)*(767 - r_mean)*d_b*d_b))
 
+
 def count_loss(img1, img2):
     return np.sum(np.square(np.apply_along_axis(
         RGB_Distance, 2,
         np.concatenate([img1, img2], axis=2)
     )))
 
+
 class DNA:
+    DIRECTORY = "savedDNA"
+
     def __init__(self, triangles):
         """
         Creates a DNA which contain set parameters of triangles.
@@ -105,6 +111,44 @@ class DNA:
 
         return new_DNA
 
+    def mutate_n_triangles(self, trianglesNumber):
+        """
+        Mutate DNA do changes only in fixed number of triangles
+        :param trianglesNumber: number triangles to mutate
+        :return: mutated DNA
+        """
+        indices = [i for i in range(self.get_triangles())]
+        random.shuffle(indices)
+        new_DNA = DNA(self.get_triangles())
+        for i in range(self.get_triangles()-trianglesNumber):
+            new_DNA.coordinates[indices[i]] = self.coordinates[indices[i]]
+            new_DNA.colors[indices[i]] = self.colors[indices[i]]
+
+        return new_DNA
+
+    def save(self, location):
+        """
+        Save a DNA to file, save in folder "savedDNA", colors are save to location_colors
+        and coordinates location_coordinates file.
+        :param location: name to save files
+        """
+        np.save(self.DIRECTORY + "/" + location + "_colors", self.colors)
+        np.save(self.DIRECTORY + "/" + location + "_coordinates", self.coordinates)
+
+    def load(self, location):
+        """
+        Load a DNA from location saved with save()
+        :param location: location to load DNA from
+        :return:
+        """
+        colors = np.load(self.DIRECTORY + "/" + location + "_colors.npy")
+        coordinates = np.load(self.DIRECTORY + "/" + location + "_coordinates.npy")
+        dna = DNA(colors.shape[0])
+        dna.colors = colors
+        dna.coordinates = coordinates
+        return dna
+
+
     def mutateV2(self, intensity):
         """
         Mutates genes with given intensity
@@ -145,7 +189,6 @@ class DNA:
                     children[id].colors[j] = other.colors[j]
         return children
 
-
     def get_triangles(self):
         """
         Get number of triangles coded in DNA
@@ -153,13 +196,15 @@ class DNA:
         """
         return self.triangles
 
+
 def myMax(t1, t2):
     return max(t1[0], t2[0]), max(t1[1], t2[1]), max(t1[2], t2[2])
 
-if __name__ == '__main__':
-    # c1 = (25, 0, 255)
-    # c2 = (17, 0, 173)
-    # print(RGB_Distance(c1, c2))
 
-    a = np.ones((5, 5, 3))
-    print(count_loss(a, np.zeros((5, 5, 3))))
+if __name__ == '__main__':
+    dna = DNA(40)
+    dna.save("test")
+    print(dna.colors[3])
+    loadedDNA = dna.load("test")
+    print(loadedDNA.colors[3])
+
