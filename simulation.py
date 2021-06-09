@@ -41,11 +41,11 @@ def get_n_best_images(DNAs, n, image):
 
 
 def run(iterations):
-    im = Image.open('Patterns/kopernik.jpg')
+    im = Image.open('Patterns/MonaLisa.jpg')
     im = im.resize(IMG_SHAPE)
     source_image = np.array(im.convert('RGB'), dtype=np.uint8)
 
-    images_DNA = [DNA(250) for _ in range(START_NUMBER)]
+    images_DNA = [DNA(300) for _ in range(START_NUMBER)]
     for i in range(iterations):
         mutated_images = mutate_images(images_DNA, GENERATED_PER_IMAGE)
         images_DNA = get_n_best_images(mutated_images, START_NUMBER, source_image)
@@ -53,7 +53,7 @@ def run(iterations):
             print(i)
             print(images_DNA[0].count_loss(source_image))
             plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
-            images_DNA[0].save("simulation_"+str(i))
+            images_DNA[0].save("monalisa_"+str(i))
             plt.show()
 
 
@@ -62,7 +62,7 @@ def run(iterations):
     plt.imshow(final_img)
     plt.show()
     cv2.imshow("mutated", final_img)
-    cv2.imwrite("kopernik.png", final_img)
+    cv2.imwrite("monalisa.png", final_img)
 
     while True:
         k = cv2.waitKey(1)
@@ -73,6 +73,6 @@ def run(iterations):
 
 
 if __name__ == '__main__':
-    run(20000)
+    run(30000)
 
 
