@@ -18,8 +18,7 @@ Each value change by some randomly choice value for example in range(0.01, 0.1).
 def RGB_Distance(colors):
     """
     Metric in RGB color space
-    :param pxl_1: (R, G, B)
-    :param pxl_2: (R, G, B)
+    :colors: The array of pixel rgb values like [r1, g1, b1, r2, g2, b2]
     :return: the distance between pixels
     """
     r1, g1, b1, r2, g2, b2 = colors[0], colors[1], colors[2], colors[3], colors[4], colors[5],
