@@ -17,5 +17,5 @@ def visualize_image(location, height, width):
 
 
 if __name__ == '__main__':
-    image = visualize_image("mieszko_19900", 300, 300)
+    image = visualize_image("MonaLisaFromMarysia_39500", 300, 300)
     image.save("result.png")
