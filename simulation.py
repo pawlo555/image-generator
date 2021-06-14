@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import os
 
 START_NUMBER = 1
-GENERATED_PER_IMAGE = 8
+GENERATED_PER_IMAGE = 5
 IMG_SHAPE = (100, 100)
 PREV_LOSS = 0
 TRIANGLES = 1
@@ -40,10 +40,12 @@ def get_n_best_images(DNAs, n, image):
     result = [DNAs_loss[0] for DNAs_loss in sorted_DNAs_loss[:n]]
     return result
 
+
 def clear_saved_dir():
     files = os.listdir("savedDNA")
     for f in files:
         os.remove("savedDNA/" + f)
+
 
 def load_dna(colors_path, coords_path):
     """
@@ -59,6 +61,7 @@ def load_dna(colors_path, coords_path):
     dna.coordinates = coordinates
     return dna
 
+
 def run(iterations, pattern_path, name="Iter", step=100, initial_DNA=None):
     """
     Executes program to generate image, saves
@@ -70,32 +73,29 @@ def run(iterations, pattern_path, name="Iter", step=100, initial_DNA=None):
     :param initial_DNA: The initial DNA, upon which the image would be generated (use "load_dna()")
     :return: The generated image after all iterations
     """
-
-    clear_saved_dir()
+    #clear_saved_dir()
 
     im = Image.open(pattern_path)
     im = im.resize(IMG_SHAPE)
     source_image = np.array(im.convert('RGB'), dtype=np.uint8)
-
 
     if initial_DNA is not None:
         images_DNA = [initial_DNA for _ in range(START_NUMBER)]
         plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
         plt.show()
     else:
-        images_DNA = [DNA(300) for _ in range(START_NUMBER)]
+        images_DNA = [DNA(500) for _ in range(START_NUMBER)]
     for i in range(iterations):
         mutated_images = mutate_images(images_DNA, GENERATED_PER_IMAGE)
         images_DNA = get_n_best_images(mutated_images, START_NUMBER, source_image)
 
         # If step is positive, print and save results every step iterations
-        if step > 0:
-            if i % step == 0:
-                print(i)
-                print(images_DNA[0].count_loss(source_image))
-                plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
-                images_DNA[0].save(name + "_" + str(i))
-                plt.show()
+        if i % step == 0:
+            print(i)
+            print(images_DNA[0].count_loss(source_image))
+            plt.imshow(images_DNA[0].generated_image(*IMG_SHAPE).astype(int))
+            images_DNA[0].save(name + "_" + str(i))
+            plt.show()
 
 
     cv2.imshow("Pattern Image", source_image)
@@ -104,7 +104,7 @@ def run(iterations, pattern_path, name="Iter", step=100, initial_DNA=None):
     plt.imshow(final_img)
     plt.show()
     cv2.imshow("Generated Image", final_img)
-    cv2.imwrite(name + ".png", final_img)
+    #cv2.imwrite(name + ".png", final_img)
 
     while True:
         k = cv2.waitKey(1)
@@ -117,10 +117,11 @@ def run(iterations, pattern_path, name="Iter", step=100, initial_DNA=None):
 if __name__ == '__main__':
     # load_dna("savedDNA/Marysia_final_colors.npy", "savedDNA/Marysia_final_coordinates.npy")
     run(
-        10000,
-        "Patterns/Marysia.jpg",
-        "Marysia",
-        1000
+        40000,
+        "Patterns/MonaLisa.jpg",
+        "MonaLisaFromMarysia",
+        500,
+        DNA(1).load("MonaLisaFromMarysia_31500")
     )
 
 
